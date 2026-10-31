@@ -1,0 +1,30 @@
+---
+description: MQTT subscriber, storage, and Flask API for Desk Buddy telemetry
+globs: "{bridge,backend,shared}/**/*.py"
+alwaysApply: false
+---
+
+# Data path
+
+Subscribe only to `deskbuddy/node1/telemetry`. Reject a payload that fails `shared.telemetry.normalize`. Print each accepted JSON line to the console, then insert it.
+
+Store with `shared.store.open_store()`:
+
+- `MONGO_URI` set: MongoDB, index on `ts`, query with sort and limit
+- `MONGO_URI` empty: append `data/telemetry.jsonl`
+
+Never put a real MongoDB string or Wi-Fi password in git. Copy `.env.example`.
+
+Flask, port 5000:
+
+- `GET /api/latest` returns the newest sample and its alerts
+- `GET /api/history?limit=` default 50, max 500, oldest first in the returned list
+- `GET /api/alerts` returns active alerts, at most 30 recent crossings, and the thresholds
+- `POST /api/commands` accepts only `buzzer`, `led`, `break`, and `ms`, then publishes `deskbuddy/node1/cmd`
+
+Thresholds live in `shared/contract.json`: hot ≥ 32°C, humid ≥ 80%, air ≥ 1800, light ≤ 400. The browser does not speak MQTT. If the broker is down, `POST /api/commands` returns 503 and the break timer still runs.
+
+```python
+# Keep this shape. Do not nest fields under topic names.
+{"nodeId": "node1", "ts": 1710000000, "tempC": 27.4, "humidity": 61.0, "airRaw": 412, "lightRaw": 1800}
+```

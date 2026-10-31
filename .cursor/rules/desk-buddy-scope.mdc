@@ -1,0 +1,24 @@
+---
+description: What Desk Buddy is, and the only path from the desk node to the dashboard
+alwaysApply: true
+---
+
+# Desk Buddy scope
+
+One ESP32 desk node. Every 5 seconds it publishes one JSON reading. A laptop stores it and a React page shows it. The page can send a break beep back to the node.
+
+Shipped behavior:
+
+- Sensors: DHT11 (`tempC`, `humidity`), MQ135 (`airRaw`), LDR (`lightRaw`). Air and light stay raw ADC 0–4095. Do not convert them to ppm or lux.
+- Up: `deskbuddy/node1/telemetry`
+- Down: `deskbuddy/node1/cmd` with `break`, `buzzer`, `led`, `ms`
+- Web: live numbers, four charts, threshold alerts, 25/5 break timer
+- One node. `nodeId` stays `node1`
+
+Do not add a chatbot, task list, calendar, map, invoices, or mock dashboard data.
+
+Do not recreate `Sensor and MQTT/` or `Backend_MongoDB/`. The only firmware is `firmware/`. The only API is `backend/app.py`. The only subscriber is `bridge/subscriber.py`.
+
+`bridge/simulate.py` is for a laptop with no board. Stop it before the ESP32 publishes. Both write the same topic.
+
+Change a topic, field, or pin in `shared/contract.json` and in the firmware together. Firmware string constants must match that file.

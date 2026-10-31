@@ -1,0 +1,7 @@
+.env
+data/
+__pycache__/
+*.pyc
+.venv/
+Frontend_Dashboard/node_modules/
+Frontend_Dashboard/build/

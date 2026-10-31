@@ -1,0 +1,65 @@
+{
+  "nodeId": "node1",
+  "intervalSeconds": 5,
+  "topics": {
+    "telemetry": "deskbuddy/node1/telemetry",
+    "command": "deskbuddy/node1/cmd"
+  },
+  "payload": {
+    "nodeId": "string",
+    "ts": "unix seconds UTC",
+    "tempC": "DHT11 celsius",
+    "humidity": "DHT11 percent",
+    "airRaw": "MQ135 ADC 0-4095, higher means worse air, not ppm",
+    "lightRaw": "LDR ADC 0-4095, higher means brighter"
+  },
+  "command": {
+    "buzzer": "bool",
+    "ms": "pulse length, 100 to 10000",
+    "led": "bool",
+    "break": "bool, three short beeps"
+  },
+  "pins": {
+    "dht11Data": {
+      "gpio": 4,
+      "bus": "digital",
+      "note": "Data to GPIO 4, 10k pull-up to 3V3. Power the module from 3V3."
+    },
+    "mq135Ao": {
+      "gpio": 34,
+      "bus": "ADC1",
+      "note": "Analog out only. GPIO 34 is input-only and stays valid while Wi-Fi is on."
+    },
+    "ldrAo": {
+      "gpio": 35,
+      "bus": "ADC1",
+      "note": "Divider: 3V3 - LDR - GPIO 35 - 10k - GND, so a brighter desk gives a higher ADC."
+    },
+    "buzzer": {
+      "gpio": 25,
+      "bus": "digital-out",
+      "note": "Active buzzer, high turns it on."
+    },
+    "led": {
+      "gpio": 26,
+      "bus": "digital-out",
+      "note": "LED through 220 ohm to GND."
+    }
+  },
+  "thresholds": {
+    "tempHighC": 32,
+    "humidityHigh": 80,
+    "airHighRaw": 1800,
+    "lightLowRaw": 400
+  },
+  "bom": [
+    {"part": "ESP32 DevKit", "qty": 1},
+    {"part": "DHT11 module", "qty": 1},
+    {"part": "MQ135 module", "qty": 1},
+    {"part": "LDR", "qty": 1},
+    {"part": "10k resistor", "qty": 2},
+    {"part": "Active buzzer", "qty": 1},
+    {"part": "LED and 220 ohm resistor", "qty": 1},
+    {"part": "Breadboard and jumper wires", "qty": 1}
+  ]
+}

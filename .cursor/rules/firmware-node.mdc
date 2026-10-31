@@ -1,0 +1,31 @@
+---
+description: ESP32 pins, flash order, and Wi-Fi config for the desk node
+globs: firmware/**/*
+alwaysApply: false
+---
+
+# Firmware node
+
+Flash `firmware/01_dht_serial/01_dht_serial.ino` first. Serial is 115200. Move on only after `tempC` and `humidity` print. Then flash `firmware/desk_buddy/desk_buddy.ino`.
+
+Edit Wi-Fi and the broker IP only in `firmware/desk_buddy/config.h`. Do not add a second config header.
+
+Pins, ADC1 only for analog:
+
+- DHT11 data GPIO 4, power from 3V3
+- MQ135 AO GPIO 34
+- LDR GPIO 35, circuit 3V3 – LDR – GPIO 35 – 10k – GND, so brighter reads higher
+- Buzzer GPIO 25, active high
+- LED GPIO 26 through 220 ohm
+
+Do not move MQ135 or LDR to GPIO 2 or GPIO 12. Those are ADC2 and read wrong while Wi-Fi is up. GPIO 34 and 35 are input-only.
+
+Publish one JSON object, not one topic per sensor:
+
+```json
+{"nodeId":"node1","ts":1710000000,"tempC":27.4,"humidity":61.0,"airRaw":412,"lightRaw":1800}
+```
+
+`ts` is Unix seconds UTC from NTP. `readTemperature()` stays Celsius. Keep the publish interval on `millis()` so a command can beep without waiting on `delay(5000)`.
+
+Libraries: DHT sensor library, PubSubClient. First wiring session needs only the DHT11. Leaving the other pins unconnected is fine.
